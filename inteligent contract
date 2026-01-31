@@ -1,0 +1,47 @@
+# { "Depends": "py-genlayer:latest" }
+import genlayer.gl as gl
+
+class MythologyGuessingGame(gl.Contract):
+    # FIX: Declaring the field here makes it persistent on the blockchain [1, 3]
+    current_quiz: str 
+
+    def __init__(self):
+        # Initializing the persistent state variable [5, 6]
+        self.current_quiz = ""
+
+    @gl.public.write
+    def generate_new_quiz(self) -> None:
+        """
+        Generates a 5-question mythology quiz and stores it in the contract state.
+        Note: Write methods should return None for full compatibility [4].
+        """
+        prompt = (
+            "You are a mythology expert. Your ONLY output must be a single, unformatted JSON object. "
+            "DO NOT use markdown (e.g., ```json) or any explanation. "
+            "Task: Generate 5 unique gods. You MUST pick from these 6 pantheons: Greek, Norse, Egyptian, Hindu, Roman, and Japanese. "
+            "Structure: { \"quiz\": [ { \"answer\": \"Name\", \"pantheon\": \"Name\", \"known_for\": \"Description\", \"hints\": [\"h1\", \"h2\", \"h3\"] } ] }"
+        )
+
+        task = "Generate a JSON object with 5 mythology gods, their pantheons, answers, and 3 hints each."
+        
+        criteria = (
+            "The output must be a valid JSON object. It must contain a 'quiz' key with 5 entries. "
+            "Each entry must include 'answer', 'pantheon', 'known_for', and a list of 3 'hints'."
+        )
+
+        # Execute AI prompt using GenLayer equivalence principle [7, 8]
+        result: str = gl.eq_principle.prompt_non_comparative(
+            lambda: gl.nondet.exec_prompt(prompt),
+            task=task,
+            criteria=criteria
+        )
+
+        # Store the result in the persistent state variable [6, 9]
+        self.current_quiz = result
+
+    @gl.public.view
+    def get_active_quiz(self) -> str:
+        """
+        Retrieves the currently stored quiz data. [9, 10]
+        """
+        return self.current_quiz
