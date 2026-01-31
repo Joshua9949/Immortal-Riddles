@@ -4,11 +4,12 @@ import { Play, Scroll, Sparkles } from 'lucide-react';
 interface StartScreenProps {
   onStart: () => void;
   isConnected: boolean;
+  isLoading?: boolean;
 }
 
-export function StartScreen({ onStart, isConnected }: StartScreenProps) {
+export function StartScreen({ onStart, isConnected, isLoading = false }: StartScreenProps) {
   return (
-    <div className="game-card text-center py-12 px-8 animate-fade-in">
+    <div className="game-card text-center py-12 px-8 animate-fade-in" aria-busy={isLoading}>
       {/* Animated icon */}
       <div className="relative w-24 h-24 mx-auto mb-8">
         <div className="absolute inset-0 rounded-full gradient-gold opacity-20 animate-pulse-gold" />
@@ -49,10 +50,20 @@ export function StartScreen({ onStart, isConnected }: StartScreenProps) {
       <Button
         onClick={onStart}
         size="lg"
-        className="gradient-gold text-primary-foreground font-display tracking-wide text-lg px-8 shadow-gold hover:opacity-90 transition-opacity"
+        className="gradient-gold text-primary-foreground font-display tracking-wide text-lg px-8 shadow-gold hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
+        disabled={isLoading}
       >
-        <Play className="w-5 h-5 mr-2" />
-        Begin Your Quest
+        {!isLoading ? (
+          <>
+            <Play className="w-5 h-5 mr-2" />
+            Begin Your Quest
+          </>
+        ) : (
+          <>
+            <div className="w-5 h-5 mr-2 rounded-full border-2 border-t-transparent border-primary-foreground animate-spin" />
+            Beginning...
+          </>
+        )}
       </Button>
 
       {!isConnected && (

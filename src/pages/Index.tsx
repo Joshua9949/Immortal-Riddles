@@ -43,6 +43,7 @@ const Index = () => {
               <StartScreen 
                 onStart={game.startGame} 
                 isConnected={wallet.isConnected} 
+                isLoading={game.isLoading}
               />
             )}
 
